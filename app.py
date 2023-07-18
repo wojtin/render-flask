@@ -10,8 +10,17 @@ def index():
     print(sitk.Version())
     return
 
-@app.route('/convert', methods=['POST'])
+@app.route('/convert', methods=['POST', 'OPTIONS'])
 def convert_image():
+    if request.method == 'OPTIONS':
+        # Handle pre-flight request for CORS
+        headers = {
+            'Access-Control-Allow-Origin': '*',  # Replace '*' with your desired domain
+            'Access-Control-Allow-Methods': 'POST',
+            'Access-Control-Allow-Headers': 'Content-Type'
+        }
+        return ('', 204, headers)
+
     image_data = request.json['image_data']
     image_data = image_data.split(',')[1]  # Remove the data:image/png;base64 prefix
 

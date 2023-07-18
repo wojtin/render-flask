@@ -15,7 +15,7 @@ def convert_image():
     if request.method == 'OPTIONS':
         # Handle pre-flight request for CORS
         headers = {
-            'Access-Control-Allow-Origin': '*',  # Replace '*' with your desired domain
+            'Access-Control-Allow-Origin': 'https://render-flask-gznv.onrender.com/convert',  # Replace '*' with your desired domain
             'Access-Control-Allow-Methods': 'POST',
             'Access-Control-Allow-Headers': 'Content-Type'
         }

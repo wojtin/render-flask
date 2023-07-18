@@ -26,8 +26,9 @@ def convert_image():
 
     # Convert base64 string to image
     decoded_image = base64.b64decode(image_data)
-    sitk_image = sitk.ReadImageFromMemory(decoded_image)
-    
+    image_buffer = io.BytesIO(decoded_image)
+    sitk_image = sitk.ReadImage(image_buffer)
+
     # Convert to grayscale
     sitk_image = sitk.RescaleIntensity(sitk_image)
     sitk_image = sitk.Cast(sitk_image, sitk.sitkUInt8)

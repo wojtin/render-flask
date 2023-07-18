@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    print(sitk.Version())
 
 @app.route('/convert', methods=['POST'])
 def convert_image():

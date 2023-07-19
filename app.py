@@ -6,6 +6,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
+   print('==================================== 6 ===========================')
    return render_template('index.html')
 
 @app.route('/processing', methods=['POST'])

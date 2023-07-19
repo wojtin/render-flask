@@ -19,7 +19,7 @@ def process():
     
     img = Image.open(file.stream)
     
-    image_buffer = io.BytesIO(decoded_image)
+    image_buffer = io.BytesIO(img)
     sitk_image = sitk.ReadImage(image_buffer)  
 
     # Convert to grayscale

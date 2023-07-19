@@ -1,45 +1,34 @@
-from flask import Flask, render_template, request, jsonify
-import SimpleITK as sitk
+from flask import Flask, request, jsonify
+from PIL import Image
 import base64
-import io
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    print(sitk.Version())
-    return
+    return '''Server Works!<hr>
+<form action="/processing" method="POST" enctype="multipart/form-data">
+<input type="file" name="image">
+<button>OK</button>
+</form>    
+'''
 
-@app.route('/convert', methods=['POST', 'OPTIONS'])
-def convert_image():
-    if request.method == 'OPTIONS':
-        # Handle pre-flight request for CORS
-        headers = {
-            'Access-Control-Allow-Origin': 'https://render-flask-gznv.onrender.com/convert',  # Replace '*' with your desired domain
-            'Access-Control-Allow-Methods': 'POST',
-            'Access-Control-Allow-Headers': 'Content-Type'
-        }
-        return ('', 204, headers)
+@app.route('/processing', methods=['POST'])
+def process():
+    file = request.files['image']
+    
+    img = Image.open(file.stream)
+    
+    data = file.stream.read()
+    #data = base64.encodebytes(data)
+    data = base64.b64encode(data).decode()   
 
-    image_data = request.json['image_data']
-    image_data = image_data.split(',')[1]  # Remove the data:image/png;base64 prefix
-
-    # Convert base64 string to image
-    decoded_image = base64.b64decode(image_data)
-    image_buffer = io.BytesIO(decoded_image)
-    sitk_image = sitk.ReadImage(image_buffer)
-
-    # Convert to grayscale
-    sitk_image = sitk.RescaleIntensity(sitk_image)
-    sitk_image = sitk.Cast(sitk_image, sitk.sitkUInt8)
-
-    # Convert image to base64 string
-    output_buffer = io.BytesIO()
-    sitk.WriteImage(sitk_image, output_buffer)
-    output_buffer.seek(0)
-    encoded_image = base64.b64encode(output_buffer.getvalue()).decode('utf-8')
-
-    return jsonify(encoded_image)
-
+    return jsonify({
+                'msg': 'success', 
+                'size': [img.width, img.height], 
+                'format': img.format,
+                'img': data
+           })
+    
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

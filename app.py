@@ -14,16 +14,20 @@ def process():
     
     img = Image.open(file.stream)
     
-    data = file.stream.read()
-    #data = base64.encodebytes(data)
-    data = base64.b64encode(data).decode()   
+    image_buffer = io.BytesIO(decoded_image)
+    sitk_image = sitk.ReadImage(image_buffer)  
 
-    return jsonify({
-                'msg': 'success', 
-                'size': [img.width, img.height], 
-                'format': img.format,
-                'img': data
-           })
+    # Convert to grayscale
+    sitk_image = sitk.RescaleIntensity(sitk_image)
+    sitk_image = sitk.Cast(sitk_image, sitk.sitkUInt8)
+
+    # Convert image to base64 string
+    output_buffer = io.BytesIO()
+    sitk.WriteImage(sitk_image, output_buffer)
+    output_buffer.seek(0)
+    encoded_image = base64.b64encode(output_buffer.getvalue()).decode('utf-8')
+
+    return jsonify(encoded_image)
     
 if __name__ == '__main__':
     app.run(debug=True)

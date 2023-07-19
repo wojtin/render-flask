@@ -6,12 +6,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return '''Server Works!<hr>
-<form action="/processing" method="POST" enctype="multipart/form-data">
-<input type="file" name="image">
-<button>OK</button>
-</form>    
-'''
+   return render_template('index.html')
 
 @app.route('/processing', methods=['POST'])
 def process():

@@ -1,38 +1,27 @@
-from flask import Flask, request, jsonify, render_template
-from PIL import Image
-import base64
-import io
+from flask import Flask, jsonify
+from kaggle.api.kaggle_api_extended import KaggleApi
+import subprocess
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-   return '''Server Works7!<hr>
-<form action="/processing" method="POST" enctype="multipart/form-data">
-<input type="file" name="image">
-<button>OK</button>
-</form>    '''
+@application.route('/')
+def fetch_kaggle_dataset():
+    # Replace 'your_username' and 'your_kernel_slug' with the actual values
+    kernel_slug = 'wojtin/test-print'
 
-@app.route('/processing', methods=['POST'])
-def process():
-    file = request.files['image']
-    
-    img = Image.open(file.stream)
-    
-    image_buffer = io.BytesIO(img)
-    sitk_image = sitk.ReadImage(image_buffer)  
+    # Set the path to your Kaggle API key file
+    api_key_path = 'kaggle.json'
 
-    # Convert to grayscale
-    sitk_image = sitk.RescaleIntensity(sitk_image)
-    sitk_image = sitk.Cast(sitk_image, sitk.sitkUInt8)
+    # Authenticate with Kaggle API
+    api = KaggleApi()
+    api.authenticate()
 
-    # Convert image to base64 string
-    output_buffer = io.BytesIO()
-    sitk.WriteImage(sitk_image, output_buffer)
-    output_buffer.seek(0)
-    encoded_image = base64.b64encode(output_buffer.getvalue()).decode('utf-8')
+    try:
+        # Use subprocess to execute the Kaggle command
+        subprocess.run(['kaggle', 'kernels', 'push', '-p', '/'])
+        return jsonify({'status': 'success', 'message': 'Kaggle kernel pushed successfully'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': f'Error pushing Kaggle kernel: {str(e)}'})
 
-    return jsonify(encoded_image)
-    
 if __name__ == '__main__':
-    app.run(debug=True)
+    application.run(debug=True)

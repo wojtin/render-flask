@@ -4,7 +4,7 @@ import subprocess
 
 app = Flask(__name__)
 
-@application.route('/')
+@app.route('/')
 def fetch_kaggle_dataset():
     # Replace 'your_username' and 'your_kernel_slug' with the actual values
     kernel_slug = 'wojtin/test-print'
@@ -24,4 +24,4 @@ def fetch_kaggle_dataset():
         return jsonify({'status': 'error', 'message': f'Error pushing Kaggle kernel: {str(e)}'})
 
 if __name__ == '__main__':
-    application.run(debug=True)
+    app.run(debug=True)

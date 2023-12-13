@@ -9,9 +9,6 @@ app = Flask(__name__)
 def fetch_kaggle_dataset():
     # Replace 'your_username' and 'your_kernel_slug' with the actual values
     kernel_slug = 'wojtin/test-print'
-
-    os.environ['KAGGLE_USERNAME'] = 'wojtin'
-    os.environ['KAGGLE_KEY'] = 'dc8c138a2e9b8c0044e46663fb17dd37'
     
     api = KaggleApi()
     api.authenticate()

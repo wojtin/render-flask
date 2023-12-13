@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify
 from kaggle.api.kaggle_api_extended import KaggleApi
 import subprocess
@@ -9,10 +10,9 @@ def fetch_kaggle_dataset():
     # Replace 'your_username' and 'your_kernel_slug' with the actual values
     kernel_slug = 'wojtin/test-print'
 
-    # Set the path to your Kaggle API key file
-    api_key_path = 'kaggle.json'
-
-    # Authenticate with Kaggle API
+    os.environ['KAGGLE_USERNAME'] = 'wojtin'
+    os.environ['KAGGLE_KEY'] = 'dc8c138a2e9b8c0044e46663fb17dd37'
+    
     api = KaggleApi()
     api.authenticate()
 
